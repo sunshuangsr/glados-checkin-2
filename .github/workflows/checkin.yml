@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ master ]
   schedule:
-    - cron:  0 10,16 * * *
+    - cron:  0 1 * * *
       # 
       # https://tool.lu/crontab/
       # https://datetime360.com/cn/utc-cst-china-time/
