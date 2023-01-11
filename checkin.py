@@ -8,38 +8,26 @@ sckey = os.environ["SCKEY"]
 
 # 填入glados账号对应cookie
 cookie = os.environ["COOKIE"]
-# #
-
-def start():    
-    url= "https://glados.rocks/api/user/checkin"
-    url2= "https://glados.rocks/api/user/status"
-    referer = 'https://glados.rocks/console/checkin'
-    #checkin = requests.post(url,headers={'cookie': cookie ,'referer': referer })
-    #state =  requests.get(url2,headers={'cookie': cookie ,'referer': referer})
-    origin = "https://glados.rocks"
-    useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
-    payload={
-        'token': 'glados_network'
-    }
-    checkin = requests.post(url,headers={'cookie': cookie ,'referer': referer,'origin':origin,'user-agent':useragent,'content-type':'application/json;charset=UTF-8'},data=json.dumps(payload))
-    state =  requests.get(url2,headers={'cookie': cookie ,'referer': referer,'origin':origin,'user-agent':useragent})
-   # print(res)
 
 
-    if 'message' in checkin.text:
-        mess = checkin.json()['message']
-        time = state.json()['data']['leftDays']
-        time = time.split('.')[0]
-        print(time)
-        if sever == 'on':
-            requests.get('https://sc.ftqq.com/' + sckey + '.send?text='+mess+'，you have '+time+' days left')
-    else:
-        requests.get('https://sc.ftqq.com/' + sckey + '.send?text=cookie过期')
 
-def main_handler(event, context):
-  return start()
+# 新版Server酱推送
+def send_server(title, content):
+    server_content = {'text': title, 'desp': content}
+    server_url = "https://sctapi.ftqq.com/%s.send" % sckey
+    resp = requests.post(server_url, params=server_content)
+    print('新版Server酱推送状态码为: %s' % resp.status_code)
+
 
 if __name__ == '__main__':
-    start()
-
-    
+    checkinUrl = 'https://glados.rocks/api/user/checkin'
+    resp = requests.post(checkinUrl, data={'token': 'glados_network'}, headers={
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36 Edg/91.0.864.37'},
+                         cookies={
+                             'Cookie': cookie})
+    message = 'GLaDOS梯子签到 : \n\n' + json.loads(resp.text).get('message')
+    print(message)
+    # Server酱通知
+    send_server('Glados签到通知', message)
+    # Telegram通知
+    # tgPush(message)
