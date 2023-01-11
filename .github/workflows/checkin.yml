@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [ master ]
   schedule:
-    - cron: 0 0 1 * * ?
+    - cron:  0 10,16 * * *
       # 
       # https://tool.lu/crontab/
       # https://datetime360.com/cn/utc-cst-china-time/
@@ -21,22 +21,22 @@ jobs:
     # https://p3terx.com/archives/github-actions-manual-trigger.html
     
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Install Python
-        run: |
-          sudo apt update && \
-          sudo apt install python3
+    - name: Install Python
+      run: |
+        sudo apt update && \
+        sudo apt install python3
 
-      - name: requirements
-        run: |
-          pip3 install -r requirements.txt
-          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Checkin
-        run: |
-          python3 checkin.py
-        env:
-          SERVE: ${{ secrets.SERVE }}
-          SCKEY: ${{ secrets.SCKEY }}
-          COOKIE: ${{ secrets.COOKIE }}
+    - name: requirements
+      run: |
+        pip3 install -r requirements.txt
+       # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Checkin
+      run: |
+        python3 checkin.py
+      env:
+        SERVE: ${{ secrets.SERVE }}
+        SCKEY: ${{ secrets.SCKEY }}
+        COOKIE: ${{ secrets.COOKIE }}
 
